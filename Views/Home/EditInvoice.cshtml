@@ -62,38 +62,38 @@
                         var index = 0;
                         foreach (var tr in Model.Items)
                         {
-                                <tr class="">
-                                    <td>
-                                        <input type="hidden" class="invoiceid" value="@tr.invoiceid">
-                                        <select id="pid" class="form-select inventory">
-                                            <option value="">Select Inventory</option>
-                                            @foreach (var item in @Model.Products)
+                                    <tr class="">
+                                        <td>
+                                            <input type="hidden" class="invoiceid" value="@tr.invoiceid">
+                                            <select id="pid" class="form-select inventory">
+                                                <option value="">Select Inventory</option>
+                                                @foreach (var item in @Model.Products)
                                         {
                                             if (tr.inventory == @item.ProductId.ToString())
                                             {
-                                                    <option selected value="@item.ProductId">@item.ProductName</option>
+                                                        <option selected value="@item.ProductId">@item.ProductName</option>
                                             }
                                             else
                                             {
-                                                    <option value="@item.ProductId">@item.ProductName</option>
+                                                        <option value="@item.ProductId">@item.ProductName</option>
                                             }
                                         }
-                                        </select>
-                                    </td>
-                                    <td><input type="text" class="form-control customer" disabled value="@Model.PartyName" /></td>
-                                    <td><input type="number" class="form-control qty" value="@tr.qty" /></td>
-                                    <td><input type="number" class="form-control rate" value="@tr.rate" /></td>
-                                    <td><input type="number" class="form-control amount" disabled value="@tr.amount" /></td>
-                                    @if (index != 0)
+                                            </select>
+                                        </td>
+                                        <td><input type="text" class="form-control customer" disabled value="@Model.PartyName" /></td>
+                                        <td><input type="number" class="form-control qty" value="@tr.qty" /></td>
+                                        <td><input type="number" class="form-control rate" value="@tr.rate" /></td>
+                                        <td><input type="number" class="form-control amount" disabled value="@tr.amount" /></td>
+                                        @if (index != 0)
                                 {
-                                        <td><button class="removeRow btn btn-sm btn-sm-danger ">Remove</button></td>
+                                            <td><button class="removeRow btn btn-sm btn-sm-danger ">Remove</button></td>
                                 }
                                 else
                                 {
-                                        <td></td>
+                                            <td></td>
                                 }
 
-                                </tr>
+                                    </tr>
 
                             index++;
                         }
@@ -188,6 +188,8 @@
                 var invoiceno = $("#invoiceno").val();
                 var totamt = parseFloat($("#Amount").val());
                 var inventoryempty = false;
+                var qtyInvalidate = false;
+
                 var objary = [];
 
                 $.each(rows, function (index, tr) {
@@ -202,6 +204,9 @@
                         inventoryempty = true;
                     }
 
+                    if (parseInt(qty) == 0 || parseInt(qty) < 0 || qty == '')
+                        qtyInvalidate = true;
+
                     var obj = {
                         inventory: inventoryId,
                         rate: rate,
@@ -213,6 +218,10 @@
                     objary.push(obj);
                 });
 
+                if (qtyInvalidate == true) {
+                    alert("Invalid quantity.");
+                    return;
+                }
 
                 if (customer == undefined || customer == '') {
                     alert("Please enter customer name.");
@@ -224,6 +233,10 @@
                     return;
                 }
 
+                if(objary.length==0){
+                    alert("Please add atleast one product.");
+                    return;
+                }
 
 
                 var obj = {

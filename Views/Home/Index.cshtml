@@ -165,6 +165,7 @@
 
                 var objary = [];
                 var inventoryempty = false;
+                var qtyInvalidate = false;
 
                 $.each(rows, function (index, tr) {
 
@@ -177,6 +178,9 @@
                         inventoryempty = true;
                     }
 
+                    if (parseInt(qty) == 0 || parseInt(qty) < 0 || qty=='')
+                        qtyInvalidate = true;
+
                     var obj = {
                         inventory: inventoryId,
                         rate: rate,
@@ -186,6 +190,8 @@
 
                     objary.push(obj);
                 });
+
+                
 
                 if (customer == undefined || customer == '') {
                     alert("Please enter customer name.");
@@ -197,7 +203,15 @@
                     return;
                 }
 
-              
+                if (qtyInvalidate == true) {
+                    alert("Invalid quantity.");
+                    return;
+                }
+
+                if (objary.length == 0) {
+                    alert("Please add atleast one product.");
+                    return;
+                }
 
                 var obj = {
                     PartyName: customer,
