@@ -1,0 +1,95 @@
+﻿@model InvoiceListView;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<a asp-action="Index" class="btn btn-outline-success float-end mb-3">New Invoice</a>
+<div class="table-responsive mt-3">
+    <table id="invoicelist" class="table align-middle table-nowrap table-centered mb-0">
+        <thead>
+            <tr>
+                <th style="width: 70px;">Invoice No.</th>
+                <th>Customer</th>
+                <th>Invoice Date</th>
+                <th>Amount</th>
+                <th class="text-end" style="width: 250px;"></th>
+            </tr>
+        </thead><!-- end thead -->
+        <tbody>
+            @{
+                var index = 1;
+                foreach (var item in Model.Invoices)
+                {
+                    <tr>
+                        <td>
+                            <div>
+                                <h5 class="text-truncate font-size-14 mb-1" data-id="@item.InvoiceId">@item.InvoiceNo</h5>
+                            </div>
+                        </td>
+                        <td>@item.PartyName</td>
+                        <td>@item.InvoiceDate</td>
+                        <td>@item.TotalAmount</td>
+                        <td class="">
+                            <span><a class="btn btn-primary" asp-action="EditInvoice" asp-route-id="@item.InvoiceId">Edit</a></span>
+                            <span>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#@item.InvoiceNo">
+                                    Delete
+                                </button>
+                            </span>
+                            <span>
+                                <a class="btn btn-danger" asp-action="ViewInvoice" asp-route-invoiceNo="@item.InvoiceId">View</a>
+                            </span>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="@item.InvoiceNo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Invoice : @item.InvoiceNo</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Do you want to delete the invoice?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <a class="btn btn-danger" asp-action="DeleteInvoice" asp-route-id="@item.InvoiceId">Delete</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+        </tbody><!-- end tbody -->
+    </table><!-- end table -->
+</div><!-- end table responsive -->
+
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            $('#invoicelist').DataTable({
+                searching: true, // Enable searching
+                searchDelay: 500, // Delay in milliseconds before searching
+                searchCols: [0, 1], // Search only the first and second columns (column indexes)
+                search: {
+                    regex: true, // Use regular expressions for searching
+                    smart: true, // Enable smart search (matching the whole search string or individual words)
+                }
+            });
+
+            var message = '@ViewBag.msg';
+
+            if (message != "") {
+                alert(message);
+            }
+        });
+    </script>
+}
